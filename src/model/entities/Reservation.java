@@ -1,5 +1,7 @@
 package src.model.entities;
 
+import src.model.exception.DomainException;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -32,13 +34,25 @@ public class Reservation {
        return TimeUnit.DAYS.convert(time,TimeUnit.MILLISECONDS);
     }
 
-    public void updateDates(Date checkin, Date checkout){
-        this.checkin = checkin;
-        this.checkout = checkout;
+    public void updateDates(Date checkIn, Date checkOut) throws DomainException{
+        Date now = new Date();
+        if (checkIn.before(now) || checkOut.before(now)) {
+            throw new DomainException("some wrong");
+        }
+        if (checkOut.before(checkIn)) {
+            throw new DomainException("Some wrong!");
+        }
+        this.checkin = checkIn;
+        this.checkout = checkOut;
     }
 
-    public String toString(){
-        return "Room: "+this.getRoomNumber()+ ", Check-in: "+sdf.format(checkin)+", Check-out: "
-                +sdf.format(checkout)+", Duration: "+this.duration()+" Days";
+        public String toString() {
+            return "Room: " + this.getRoomNumber() +
+                    ", Check-in: " + sdf.format(checkin) +
+                    ", Check-out: "
+                    + sdf.format(checkout) +
+                    ", Duration: " + this.duration() +
+                    " Days";
+        }
+
     }
-}
